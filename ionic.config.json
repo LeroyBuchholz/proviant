@@ -1,0 +1,7 @@
+{
+  "name": "Proviant",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
