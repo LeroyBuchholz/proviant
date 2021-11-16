@@ -1,6 +1,6 @@
-import MessageListItem from '../components/MessageListItem';
+import StockListItem from '../components/StockListItem';
 import { useState } from 'react';
-import { Message, getMessages } from '../data/messages';
+import { Stock, getStock } from '../data/stock';
 import {
   IonContent,
   IonHeader,
@@ -16,11 +16,11 @@ import './Home.css';
 
 const Home: React.FC = () => {
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [stock, setStock] = useState<Stock[]>([]);
 
   useIonViewWillEnter(() => {
-    const msgs = getMessages();
-    setMessages(msgs);
+    const stock = getStock();
+    setStock(stock);
   });
 
   const refresh = (e: CustomEvent) => {
@@ -33,7 +33,7 @@ const Home: React.FC = () => {
     <IonPage id="home-page">
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
+          <IonTitle>Proviant</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -44,13 +44,13 @@ const Home: React.FC = () => {
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">
-              Inbox
+              Proviant
             </IonTitle>
           </IonToolbar>
         </IonHeader>
 
         <IonList>
-          {messages.map(m => <MessageListItem key={m.id} message={m} />)}
+          {stock.map(item => <StockListItem key={item.id} stockItem={item} />)}
         </IonList>
       </IonContent>
     </IonPage>
