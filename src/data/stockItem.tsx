@@ -1,6 +1,7 @@
 import {unit} from "./unit";
+import { Storage } from '@capacitor/storage';
 
-export interface Stock {
+export interface StockItem {
   name: string;
   location: string;
   amount?: number;
@@ -8,7 +9,7 @@ export interface Stock {
   id: number;
 }
 
-const stock: Stock[] = [
+const initialStock: StockItem[] = [
   {
     name: 'Kartoffeln',
     location: 'Keller',
@@ -46,6 +47,19 @@ const stock: Stock[] = [
   }
 ];
 
-export const getStock = () => stock;
+export async function initiateStorage() {
+  await Storage.set({
+    key: 'food',
+    value: JSON.stringify(initialStock),
+  });
+}
 
-export const getStockItem = (id: number) => stock.find(item => item.id === id);
+export async function getStock() {
+  const { value } = await Storage.get({key: 'food'});
+  return typeof value === "string" ? JSON.parse(value) : [];
+}
+
+export async function getStockItem(id: number) {
+  const stock = await getStock();
+  return stock.find((item: StockItem) => item.id === id);
+}

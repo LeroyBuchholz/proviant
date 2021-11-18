@@ -1,14 +1,11 @@
 import {
-    IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle,
-    IonItem,
-    IonLabel,
-    IonNote
+    IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle
 } from '@ionic/react';
-import { Stock } from '../data/stock';
+import { StockItem } from '../data/stockItem';
 import './StockListItem.css';
 
 interface StockListItemProps {
-  stockItem: Stock;
+  stockItem: StockItem;
 }
 
 const StockListItem: React.FC<StockListItemProps> = ({ stockItem }) => {

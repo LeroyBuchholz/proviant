@@ -1,6 +1,6 @@
 import StockListItem from '../components/StockListItem';
 import { useState } from 'react';
-import { Stock, getStock } from '../data/stock';
+import { StockItem, getStock, initiateStorage } from '../data/stockItem';
 import {
   IonContent,
   IonHeader,
@@ -16,10 +16,12 @@ import './Home.css';
 
 const Home: React.FC = () => {
 
-  const [stock, setStock] = useState<Stock[]>([]);
+  const [stock, setStock] = useState<StockItem[]>([]);
 
-  useIonViewWillEnter(() => {
-    const stock = getStock();
+  useIonViewWillEnter(async () => {
+    await initiateStorage();
+
+    const stock = await getStock();
     setStock(stock);
   });
 

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Stock, getStockItem} from '../data/stock';
+import {StockItem, getStockItem} from '../data/stockItem';
 import {
     IonBackButton,
     IonButtons,
@@ -13,11 +13,11 @@ import {useParams} from 'react-router';
 import './ViewStock.css';
 
 function ViewStock() {
-    const [stock, setStock] = useState<Stock>();
+    const [stock, setStock] = useState<StockItem>();
     const params = useParams<{ id: string }>();
 
-    useIonViewWillEnter(() => {
-        const stockItem = getStockItem(parseInt(params.id, 10));
+    useIonViewWillEnter(async () => {
+        const stockItem = await getStockItem(parseInt(params.id, 10));
         setStock(stockItem);
     });
 
