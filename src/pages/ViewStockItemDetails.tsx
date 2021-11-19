@@ -27,7 +27,7 @@ function ViewStock() {
             <IonHeader translucent>
                 <IonToolbar>
                     <IonButtons slot="start">
-                        <IonBackButton text="Zurück" defaultHref="/home"></IonBackButton>
+                        <IonBackButton text="Zurück" defaultHref="/home">Zurück</IonBackButton>
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
