@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {StockItem, getStockItem} from '../data/stockItem';
+import {StockItem, getStockItem} from '../data/Stock';
 import {
     IonBackButton,
     IonButtons,
@@ -17,7 +17,8 @@ function ViewStock() {
     const params = useParams<{ id: string }>();
 
     useIonViewWillEnter(async () => {
-        const stockItem = await getStockItem(parseInt(params.id, 10));
+        const stockItem = await getStockItem(params.id);
+        console.log(stockItem);
         setStock(stockItem);
     });
 
