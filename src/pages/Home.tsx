@@ -1,6 +1,6 @@
 import StockListItem from '../components/StockListItem';
 import React, {useState} from 'react';
-import {StockItem, getStock, initiateStorage, addStockItem} from '../data/Stock';
+import {StockItem, getStock, addStockItem} from '../data/Stock';
 import {
     IonPage, IonContent, IonHeader, IonIcon, IonRefresher, IonRefresherContent,
     IonButton, IonButtons,
@@ -15,120 +15,137 @@ import {Unit} from "../data/Unit";
 
 const Home: React.FC = () => {
 
-        const [stock, setStock] = useState<StockItem[]>([]);
-        const [showModal, setShowModal] = useState(false);
-        const [foodName, setFoodName] = useState<string>('');
-        const [amount, setAmount] = useState<number>(0);
-        const [measure, setMeasure] = useState<Unit>();
-        const [location, setLocation] = useState<string>('');
+    const [stock, setStock] = useState<StockItem[]>([]);
 
-        async function loadStock() {
-            let stock = await getStock();
-            if (stock === []) {
-                await initiateStorage();
-                stock = await getStock();
-            }
-            setStock(stock);
-        }
+    const [showModal, setShowModal] = useState(false);
 
-        const refresh = (e: CustomEvent) => {
-            setTimeout(() => {
-                e.detail.complete();
-            }, 3000);
-        };
+    const [foodName, setFoodName] = useState<string>('');
+    const [amount, setAmount] = useState<number>(0);
+    const [unit, setUnit] = useState<Unit>();
+    const [location, setLocation] = useState<string>('');
 
-        useIonViewWillEnter(async () => {
-            await loadStock();
+    const refresh = (e: CustomEvent) => {
+        setTimeout(() => {
+            e.detail.complete();
+        }, 3000);
+    };
+
+    function loadStock() {
+        getStock().then(newStock => {
+            console.log(newStock);
+            setStock(newStock);
         });
+    }
 
-        return (
-            <IonPage id="home-page">
-                <IonHeader>
+    function clearAddingForm() {
+        setFoodName('');
+        setAmount(0);
+        setUnit(undefined);
+        setLocation('');
+    }
+
+    //useIonViewWillEnter (loadStock);
+
+    useIonViewWillEnter(() => {
+        console.log('enter');
+        loadStock();
+    });
+
+    return (
+        <IonPage id="home-page">
+            <IonHeader>
+                <IonToolbar>
+                    <IonTitle>Proviant</IonTitle>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent fullscreen>
+                <IonRefresher slot="fixed" onIonRefresh={refresh}>
+                    <IonRefresherContent></IonRefresherContent>
+                </IonRefresher>
+
+                <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle>Proviant</IonTitle>
+                        <IonTitle size="large">
+                            Proviant
+                        </IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonContent fullscreen>
-                    <IonRefresher slot="fixed" onIonRefresh={refresh}>
-                        <IonRefresherContent></IonRefresherContent>
-                    </IonRefresher>
 
-                    <IonHeader collapse="condense">
+                <IonList>
+                    {stock.map(item => {
+                        console.log('redered');
+                        return <StockListItem key={item.id} stockItem={item}/>
+                    })}
+                </IonList>
+
+                <IonModal isOpen={showModal}>
+                    <IonHeader>
                         <IonToolbar>
-                            <IonTitle size="large">
-                                Proviant
-                            </IonTitle>
+                            <IonTitle>Hinzufügen</IonTitle>
+                            <IonButtons slot="end">
+                                <IonButton onClick={() => setShowModal(false)}>Schließen</IonButton>
+                            </IonButtons>
                         </IonToolbar>
                     </IonHeader>
-
-                    <IonList>
-                        {stock.map(item => <StockListItem key={item.id} stockItem={item}/>)}
-                    </IonList>
-
-                    <IonModal isOpen={showModal}>
-                        <IonHeader>
-                            <IonToolbar>
-                                <IonTitle>Hinzufügen</IonTitle>
-                                <IonButtons slot="end">
-                                    <IonButton onClick={() => setShowModal(false)}>Schließen</IonButton>
-                                </IonButtons>
-                            </IonToolbar>
-                        </IonHeader>
+                    <IonItemDivider></IonItemDivider>
+                    <IonContent>
+                        <IonItemGroup>
+                            <IonItem>
+                                <IonLabel position="stacked">Lebensmittel</IonLabel>
+                                <IonInput value={foodName}
+                                          autofocus={true}
+                                          placeholder="z.B. Tomate, Reis, ..."
+                                          onIonChange={e => setFoodName(e.detail.value!)}>
+                                </IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonLabel position="stacked">Menge</IonLabel>
+                                <IonInput type="number"
+                                          min="1"
+                                          value={amount}
+                                          placeholder="0"
+                                          onIonChange={e => setAmount(parseInt(e.detail.value!))}>
+                                </IonInput>
+                            </IonItem>
+                            <IonItem>
+                                <IonLabel position="stacked">Maßeinheit</IonLabel>
+                                <IonSelect interface="popover"
+                                           value={unit}
+                                           placeholder="Maßeinheit"
+                                           onIonChange={e => setUnit(e.detail.value)}>
+                                    <IonSelectOption value={Unit.stk}>{Unit.stk}</IonSelectOption>
+                                    <IonSelectOption value={Unit.kg}>{Unit.kg}</IonSelectOption>
+                                    <IonSelectOption value={Unit.g}>{Unit.g}</IonSelectOption>
+                                </IonSelect>
+                            </IonItem>
+                            <IonItem>
+                                <IonLabel position="stacked">Aufbewahrungsort</IonLabel>
+                                <IonInput value={location}
+                                          placeholder="z.B. Kühlschrank, Keller, ..."
+                                          onIonChange={e => setLocation(e.detail.value!)}>
+                                </IonInput>
+                            </IonItem>
+                        </IonItemGroup>
                         <IonItemDivider></IonItemDivider>
-                        <IonContent>
-                            <IonItemGroup>
-                                <IonItem>
-                                    <IonLabel position="stacked">Lebensmittel</IonLabel>
-                                    <IonInput value={foodName}
-                                              autofocus={true}
-                                              placeholder="z.B. Tomate, Reis, ..."
-                                              onIonChange={e => setFoodName(e.detail.value!)}>
-                                    </IonInput>
-                                </IonItem>
-                                <IonItem>
-                                    <IonLabel position="stacked">Menge</IonLabel>
-                                    <IonInput type="number"
-                                              min="1"
-                                              value={amount}
-                                              placeholder="0"
-                                              onIonChange={e => setAmount(parseInt(e.detail.value!))}>
-                                    </IonInput>
-                                </IonItem>
-                                <IonItem>
-                                    <IonLabel position="stacked">Maßeinheit</IonLabel>
-                                    <IonSelect interface="popover"
-                                               value={measure}
-                                               placeholder="Maßeinheit"
-                                               onIonChange={e => setMeasure(e.detail.value)}>
-                                        <IonSelectOption value={Unit.stk}>{Unit.stk}</IonSelectOption>
-                                        <IonSelectOption value={Unit.kg}>{Unit.kg}</IonSelectOption>
-                                        <IonSelectOption value={Unit.g}>{Unit.g}</IonSelectOption>
-                                    </IonSelect>
-                                </IonItem>
-                                <IonItem>
-                                    <IonLabel position="stacked">Aufbewahrungsort</IonLabel>
-                                    <IonInput value={location}
-                                              placeholder="z.B. Kühlschrank, Keller, ..."
-                                              onIonChange={e => setLocation(e.detail.value!)}>
-                                    </IonInput>
-                                </IonItem>
-                            </IonItemGroup>
-                            <IonItemDivider></IonItemDivider>
-                            <IonButton expand="full"
-                                       onClick={() => addStockItem(foodName, location, amount, measure)}>
-                                Hinzufügen
-                            </IonButton>
-                        </IonContent>
-                    </IonModal>
+                        <IonButton expand="full"
+                                   onClick={() => {
+                                       addStockItem(foodName, location, amount, unit);
+                                       loadStock();
+                                       setShowModal(false);
+                                       clearAddingForm();
+                                   }}>
+                            Hinzufügen
+                        </IonButton>
+                    </IonContent>
+                </IonModal>
 
-                    <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                        <IonFabButton onClick={() => setShowModal(true)}><IonIcon icon={add}/></IonFabButton>
-                    </IonFab>
+                <IonFab vertical="bottom" horizontal="center" slot="fixed">
+                    <IonFabButton onClick={() => setShowModal(true)}><IonIcon icon={add}/></IonFabButton>
+                </IonFab>
 
-                </IonContent>
-            </IonPage>
-        );
-    }
-;
+            </IonContent>
+        </IonPage>
+    );
+};
 
 export default Home;
