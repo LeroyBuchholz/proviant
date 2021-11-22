@@ -50,7 +50,6 @@ const Home: React.FC = () => {
     //useIonViewWillEnter (loadStock);
 
     useIonViewWillEnter(() => {
-        console.log('entered');
         loadStock();
     });
 
@@ -143,7 +142,11 @@ const Home: React.FC = () => {
                 </IonModal>
 
                 <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                    <IonFabButton onClick={() => setStock([...stock])/*setShowModal(true)*/}><IonIcon icon={add}/></IonFabButton>
+                    <IonFabButton onClick={() => setShowModal(true)}><IonIcon icon={add}/></IonFabButton>
+                </IonFab>
+
+                <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                    <IonFabButton onClick={() => setStock([...stock])}>Load</IonFabButton>
                 </IonFab>
 
             </IonContent>
