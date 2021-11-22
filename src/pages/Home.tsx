@@ -30,9 +30,12 @@ const Home: React.FC = () => {
         }, 3000);
     };
 
+    function logStock() {
+        console.log(stock);
+    }
+
     function loadStock() {
         getStock().then(newStock => {
-            console.log(newStock);
             setStock(newStock);
         });
     }
@@ -47,7 +50,7 @@ const Home: React.FC = () => {
     //useIonViewWillEnter (loadStock);
 
     useIonViewWillEnter(() => {
-        console.log('enter');
+        console.log('entered');
         loadStock();
     });
 
@@ -73,7 +76,6 @@ const Home: React.FC = () => {
 
                 <IonList>
                     {stock.map(item => {
-                        console.log('redered');
                         return <StockListItem key={item.id} stockItem={item}/>
                     })}
                 </IonList>
@@ -129,10 +131,11 @@ const Home: React.FC = () => {
                         <IonItemDivider></IonItemDivider>
                         <IonButton expand="full"
                                    onClick={() => {
-                                       addStockItem(foodName, location, amount, unit);
-                                       loadStock();
-                                       setShowModal(false);
-                                       clearAddingForm();
+                                       addStockItem(foodName, location, amount, unit).then(() => {
+                                           loadStock();
+                                           setShowModal(false);
+                                           clearAddingForm();
+                                       });
                                    }}>
                             Hinzufügen
                         </IonButton>
@@ -140,7 +143,7 @@ const Home: React.FC = () => {
                 </IonModal>
 
                 <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                    <IonFabButton onClick={() => setShowModal(true)}><IonIcon icon={add}/></IonFabButton>
+                    <IonFabButton onClick={() => setStock([...stock])/*setShowModal(true)*/}><IonIcon icon={add}/></IonFabButton>
                 </IonFab>
 
             </IonContent>

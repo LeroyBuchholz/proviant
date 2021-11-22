@@ -12,14 +12,12 @@ import {
 import {useParams} from 'react-router';
 import './ViewStock.css';
 
-function ViewStock() {
-    const [stock, setStock] = useState<StockItem>();
+function ViewStockItemDetails() {
+    const [stockItem, setStockItem] = useState<StockItem>();
     const params = useParams<{ id: string }>();
 
-    useIonViewWillEnter(async () => {
-        const stockItem = await getStockItem(params.id);
-        console.log(stockItem);
-        setStock(stockItem);
+    useIonViewWillEnter(() => {
+        getStockItem(params.id).then((item => setStockItem(item)));
     });
 
     return (
@@ -33,11 +31,11 @@ function ViewStock() {
             </IonHeader>
 
             <IonContent fullscreen>
-                {stock ? (
+                {stockItem ? (
                     <div>
-                        <h1>{stock.name}</h1>
-                        <h2>{stock.location}</h2>
-                        <span>{stock.amount} {stock.unit}</span>
+                        <h1>{stockItem.name}</h1>
+                        <h2>{stockItem.location}</h2>
+                        <span>{stockItem.amount} {stockItem.unit}</span>
                     </div>
                 ) : (
                     <div>Lebensmittel kann leider nicht angezeigt werden</div>
@@ -47,4 +45,4 @@ function ViewStock() {
     );
 }
 
-export default ViewStock;
+export default ViewStockItemDetails;

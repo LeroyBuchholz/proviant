@@ -75,7 +75,6 @@ export function generateStockItem(name: string, location: string, amount: number
 
 export async function addStockItem(name: string, location: string, amount: number, unit: Unit | undefined): Promise<void> {
    const stockItem = generateStockItem(name, location, amount, unit);
-   console.log('added');
 
     await Storage.set({
         key: stockItem.id,
